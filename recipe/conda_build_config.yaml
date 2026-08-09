@@ -1,2 +1,4 @@
+# msgvault calls freadlink() in internal/config/edit_resolve_darwin.go,
+# which is only declared in the macOS 13.0+ SDK.
 c_stdlib_version:  # [osx]
-  - 12.0  # [osx]
+  - 13.0  # [osx]
