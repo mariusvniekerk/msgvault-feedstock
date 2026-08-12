@@ -16,6 +16,8 @@ build:
   script:
     - cd src
     - make web-install web-embed
+    - node $RECIPE_DIR/collect-node-licenses.mjs web/node_modules frontend-license-input.json
+    - pnpm-licenses generate-disclaimer --json-input-file frontend-license-input.json --output-file frontend_licenses.txt
     - cd cmd/msgvault
     - go-licenses save . --save_path ../../../library_licenses${{ ' --ignore github.com/mattn/go-localereader' if win else '' }}
     - go build -v -tags "fts5,duckdb_use_lib,libsqlite3" -o $PREFIX/bin/msgvault -ldflags="-s -w -X github.com/wesm/msgvault/cmd/msgvault/cmd.Version=v${PKG_VERSION}"
@@ -37,6 +39,7 @@ requirements:
     - go-licenses
     - make
     - nodejs >=20.19,<25
+    - pnpm-licenses
   host:
     - libduckdb-devel
     - libsqlite
@@ -65,6 +68,7 @@ about:
   license_file:
     - src/LICENSE
     - library_licenses/
+    - src/frontend_licenses.txt
   documentation: https://pkg.go.dev/github.com/wesm/msgvault
   repository: https://github.com/wesm/msgvault
 
