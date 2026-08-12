@@ -12,11 +12,14 @@ source:
 
 build:
   skip: win
-  number: 0
+  number: 1
   script:
-    - cd src/cmd/msgvault
+    - cd src
+    - make web-install web-embed
+    - cd cmd/msgvault
     - go-licenses save . --save_path ../../../library_licenses${{ ' --ignore github.com/mattn/go-localereader' if win else '' }}
     - go build -v -tags "fts5,duckdb_use_lib,libsqlite3" -o $PREFIX/bin/msgvault -ldflags="-s -w -X github.com/wesm/msgvault/cmd/msgvault/cmd.Version=v${PKG_VERSION}"
+    - node ../../scripts/check-web-assets.mjs --binary $PREFIX/bin/msgvault
     - if: unix
       then:
         - mkdir -p $PREFIX/share/bash-completion/completions $PREFIX/share/zsh/site-functions $PREFIX/share/fish/vendor_completions.d
@@ -30,7 +33,10 @@ requirements:
     - ${{ compiler("c") }}
     - ${{ compiler("cxx") }}
     - ${{ stdlib("c") }}
+    - bun >=1.3,<2
     - go-licenses
+    - make
+    - nodejs >=20.19,<25
   host:
     - libduckdb-devel
     - libsqlite
